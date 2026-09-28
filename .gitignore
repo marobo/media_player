@@ -1,0 +1,54 @@
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# ---------- Runtime data ----------
+# Library cache, extracted artwork, video thumbnails, playlists/favorites/recent
+data/
+
+# Logs
+*.log
+logs/
+
+# ---------- Media files ----------
+# Your music and videos are never part of the repo; keep the folder structure only
+media/music/*
+media/videos/*
+!media/music/.gitkeep
+!media/videos/.gitkeep
+
+# ---------- Environment / secrets ----------
+.env
+.env.*
+!.env.example
+
+# ---------- Editors & IDEs ----------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ---------- OS files ----------
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+Thumbs.db
+Desktop.ini

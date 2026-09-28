@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0e1014">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Local Media</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div id="app" class="app">
+
+    <!-- ============ Sidebar (desktop) / drawer (mobile) ============ -->
+    <aside class="sidebar" id="sidebar" aria-label="Navigation">
+      <a class="brand" href="#/home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M9 18V6l11-2v12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.5" fill="currentColor"/><circle cx="17.5" cy="16" r="2.5" fill="currentColor"/></svg>
+        </span>
+        <span class="brand-name">Local Media</span>
+      </a>
+      <nav class="nav" id="nav">
+        <a href="#/home" data-route="home"><span class="nav-icon" data-icon="home"></span>Home</a>
+        <a href="#/music" data-route="music"><span class="nav-icon" data-icon="music"></span>Music</a>
+        <a href="#/videos" data-route="videos"><span class="nav-icon" data-icon="video"></span>Videos</a>
+        <a href="#/playlists" data-route="playlists"><span class="nav-icon" data-icon="playlist"></span>Playlists</a>
+        <a href="#/favorites" data-route="favorites"><span class="nav-icon" data-icon="heart"></span>Favorites</a>
+        <a href="#/recent" data-route="recent"><span class="nav-icon" data-icon="clock"></span>Recently Played</a>
+      </nav>
+      <div class="sidebar-section">
+        <div class="sidebar-section-head">
+          <span>Your playlists</span>
+          <button class="icon-btn small" data-action="new-playlist" title="New playlist" aria-label="New playlist"><span data-icon="plus"></span></button>
+        </div>
+        <div class="sidebar-playlists" id="sidebar-playlists"></div>
+      </div>
+      <div class="sidebar-footer">
+        <button class="btn ghost full" data-action="rescan" id="rescan-btn"><span data-icon="refresh"></span><span>Rescan Library</span></button>
+        <div class="lan-info" id="lan-info"></div>
+      </div>
+    </aside>
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+    <!-- ============ Top bar ============ -->
+    <header class="topbar">
+      <button class="icon-btn menu-btn" id="menu-btn" aria-label="Open menu"><span data-icon="menu"></span></button>
+      <div class="topbar-nav">
+        <button class="icon-btn" data-action="back" aria-label="Back" title="Back"><span data-icon="chevron-left"></span></button>
+      </div>
+      <form class="search" id="search-form" role="search" autocomplete="off">
+        <span class="search-icon" data-icon="search"></span>
+        <input type="search" id="search-input" placeholder="Search songs, artists, albums, videos" aria-label="Search" enterkeyhint="search">
+        <button type="button" class="search-clear icon-btn small hidden" id="search-clear" aria-label="Clear search"><span data-icon="close"></span></button>
+      </form>
+      <div class="topbar-actions">
+        <button class="icon-btn" data-action="rescan" title="Rescan library" aria-label="Rescan library"><span data-icon="refresh"></span></button>
+        <button class="icon-btn" data-action="toggle-queue" title="Queue" aria-label="Queue"><span data-icon="queue"></span></button>
+      </div>
+    </header>
+
+    <!-- ============ Mobile top navigation tabs ============ -->
+    <nav class="mobile-tabs" id="mobile-tabs" aria-label="Sections">
+      <a href="#/home" data-route="home">Home</a>
+      <a href="#/music" data-route="music">Music</a>
+      <a href="#/videos" data-route="videos">Videos</a>
+      <a href="#/playlists" data-route="playlists">Playlists</a>
+      <a href="#/favorites" data-route="favorites">Favorites</a>
+      <a href="#/recent" data-route="recent">Recent</a>
+    </nav>
+
+    <!-- ============ Main content ============ -->
+    <main class="main" id="main" tabindex="-1"></main>
+
+    <!-- ============ Queue panel ============ -->
+    <aside class="queue-panel" id="queue-panel" aria-label="Queue">
+      <div class="queue-head">
+        <h2>Queue</h2>
+        <div class="queue-head-actions">
+          <button class="btn ghost small" data-action="save-queue" title="Save queue as playlist">Save</button>
+          <button class="btn ghost small" data-action="clear-queue">Clear</button>
+          <button class="icon-btn" data-action="toggle-queue" aria-label="Close queue"><span data-icon="close"></span></button>
+        </div>
+      </div>
+      <div class="queue-body" id="queue-body"></div>
+    </aside>
+
+    <!-- ============ Persistent bottom player ============ -->
+    <footer class="player" id="player">
+      <div class="player-mini-progress"><div id="mini-progress-fill"></div></div>
+
+      <div class="player-now" id="player-now" role="button" tabindex="0" aria-label="Now playing">
+        <div class="player-art" id="player-art"><span data-icon="music"></span></div>
+        <div class="player-meta">
+          <div class="player-title" id="player-title">Nothing playing</div>
+          <div class="player-artist" id="player-artist">Pick a song to start</div>
+        </div>
+        <button class="icon-btn fav-btn" id="player-fav" data-action="toggle-fav-current" aria-label="Favorite"><span data-icon="heart"></span></button>
+      </div>
+
+      <div class="player-center">
+        <div class="player-controls">
+          <button class="icon-btn toggle" id="btn-shuffle" data-action="shuffle" aria-label="Shuffle" title="Shuffle"><span data-icon="shuffle"></span></button>
+          <button class="icon-btn" id="btn-prev" data-action="prev" aria-label="Previous" title="Previous"><span data-icon="prev"></span></button>
+          <button class="play-btn" id="btn-play" data-action="toggle-play" aria-label="Play"><span data-icon="play"></span></button>
+          <button class="icon-btn" id="btn-next" data-action="next" aria-label="Next" title="Next"><span data-icon="next"></span></button>
+          <button class="icon-btn toggle" id="btn-repeat" data-action="repeat" aria-label="Repeat" title="Repeat"><span data-icon="repeat"></span></button>
+        </div>
+        <div class="player-progress">
+          <span class="time" id="time-current">0:00</span>
+          <input type="range" class="slider" id="seek" min="0" max="1000" value="0" step="1" aria-label="Seek">
+          <span class="time" id="time-total">0:00</span>
+        </div>
+      </div>
+
+      <div class="player-right">
+        <button class="icon-btn" data-action="toggle-queue" aria-label="Queue" title="Queue"><span data-icon="queue"></span></button>
+        <button class="icon-btn" id="btn-mute" data-action="mute" aria-label="Mute" title="Mute"><span data-icon="volume"></span></button>
+        <input type="range" class="slider volume" id="volume" min="0" max="100" value="80" aria-label="Volume">
+        <button class="eq-btn" id="btn-eq" data-action="toggle-eq" aria-label="Equalizer" aria-expanded="false" aria-controls="eq-panel" title="Equalizer">EQ</button>
+        <button class="icon-btn collapse-btn" data-action="collapse-player" aria-label="Close"><span data-icon="chevron-down"></span></button>
+      </div>
+
+      <!-- Equalizer popover (desktop) / bottom sheet (mobile) -->
+      <div class="eq-panel hidden" id="eq-panel" role="dialog" aria-label="Equalizer">
+        <div class="eq-head">
+          <h3>Equalizer</h3>
+          <label class="eq-switch" title="Enable or bypass the equalizer">
+            <input type="checkbox" id="eq-enabled" role="switch" aria-label="Equalizer on/off">
+            <span class="eq-switch-track"><span class="eq-switch-thumb"></span></span>
+            <span class="eq-switch-label" id="eq-switch-label">ON</span>
+          </label>
+          <span class="spacer"></span>
+          <button class="btn ghost small" id="eq-reset" type="button">Reset</button>
+          <button class="icon-btn small" data-action="toggle-eq" aria-label="Close equalizer"><span data-icon="close"></span></button>
+        </div>
+        <div class="eq-body">
+          <div class="eq-scale" aria-hidden="true"><span>+12</span><span>0</span><span>-12</span></div>
+          <div class="eq-bands" id="eq-bands"></div>
+        </div>
+        <div class="eq-foot">
+          <label for="eq-preset">Preset</label>
+          <select id="eq-preset" class="field"></select>
+          <span class="eq-status" id="eq-status"></span>
+        </div>
+      </div>
+
+      <div class="player-mini-actions">
+        <button class="icon-btn" data-action="toggle-play" aria-label="Play/Pause"><span id="mini-play-icon" data-icon="play"></span></button>
+        <button class="icon-btn" data-action="next" aria-label="Next"><span data-icon="next"></span></button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Persistent audio element: lives outside the routed content so playback survives navigation -->
+  <audio id="audio" preload="metadata"></audio>
+
+  <!-- ============ Video player overlay ============ -->
+  <div class="video-overlay hidden" id="video-overlay" role="dialog" aria-modal="true" aria-label="Video player">
+    <div class="video-stage" id="video-stage">
+      <video id="video" playsinline preload="metadata"></video>
+      <div class="video-spinner" id="video-spinner"></div>
+      <button class="video-bigplay" id="video-bigplay" aria-label="Play"><span data-icon="play"></span></button>
+      <div class="video-top">
+        <button class="icon-btn" data-vaction="close" aria-label="Close video"><span data-icon="chevron-down"></span></button>
+        <div class="video-title" id="video-title"></div>
+        <button class="icon-btn fav-btn" id="video-fav" data-vaction="fav" aria-label="Favorite"><span data-icon="heart"></span></button>
+      </div>
+      <div class="video-controls" id="video-controls">
+        <div class="video-seek-row">
+          <input type="range" class="slider video-seek" id="video-seek" min="0" max="1000" value="0" step="1" aria-label="Seek">
+        </div>
+        <div class="video-buttons">
+          <button class="icon-btn" data-vaction="prev" aria-label="Previous video"><span data-icon="prev"></span></button>
+          <button class="icon-btn" data-vaction="toggle" id="video-play" aria-label="Play/Pause"><span data-icon="play"></span></button>
+          <button class="icon-btn" data-vaction="next" aria-label="Next video"><span data-icon="next"></span></button>
+          <div class="video-volume">
+            <button class="icon-btn" data-vaction="mute" id="video-mute" aria-label="Mute"><span data-icon="volume"></span></button>
+            <input type="range" class="slider volume" id="video-volume" min="0" max="100" value="100" aria-label="Volume">
+          </div>
+          <span class="video-time"><span id="video-current">0:00</span> / <span id="video-duration">0:00</span></span>
+          <span class="spacer"></span>
+          <div class="video-speed">
+            <button class="btn ghost small" data-vaction="speed" id="video-speed-btn">1×</button>
+            <div class="speed-menu hidden" id="speed-menu">
+              <button data-speed="0.5">0.5×</button>
+              <button data-speed="0.75">0.75×</button>
+              <button data-speed="1" class="active">1×</button>
+              <button data-speed="1.25">1.25×</button>
+              <button data-speed="1.5">1.5×</button>
+              <button data-speed="2">2×</button>
+            </div>
+          </div>
+          <button class="icon-btn" data-vaction="pip" id="video-pip" aria-label="Picture in picture" title="Picture in picture"><span data-icon="pip"></span></button>
+          <button class="icon-btn" data-vaction="fullscreen" aria-label="Fullscreen" title="Fullscreen"><span data-icon="fullscreen"></span></button>
+        </div>
+      </div>
+    </div>
+    <div class="video-info" id="video-info"></div>
+  </div>
+
+  <div class="context-menu hidden" id="context-menu" role="menu"></div>
+  <div class="context-backdrop hidden" id="context-backdrop"></div>
+  <div class="modal-root hidden" id="modal-root"></div>
+  <div class="toast-root" id="toast-root" aria-live="polite"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
